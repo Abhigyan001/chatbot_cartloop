@@ -9,6 +9,11 @@ class ActionProvider {
     this.updateChatbotState(greetingMessage);
   }
 
+  greetassamese() {
+    const newMessage = this.createChatBotMessage("Mur bhaale, apunar ki khobor!");
+    this.updateChatbotState(newMessage);
+  }
+
   updateChatbotState(message) {
     this.setState((prevState) => ({
       ...prevState,
