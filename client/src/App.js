@@ -1,11 +1,18 @@
+//  Import dependencies
+import React, { useEffect } from "react";
+import "./App.css";
 
-import './App.css';
+// Import redux components
+import { Provider } from "react-redux";
+import store from "./store";
 
 function App() {
   return (
-    <div className="App">
-      hello world
-    </div>
+    <Provider store={store}>
+      <div className="container">
+        hello
+      </div>
+    </Provider>
   );
 }
 
