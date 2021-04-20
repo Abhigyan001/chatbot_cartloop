@@ -38,7 +38,7 @@ cd server
 npm install
 ```
 ## Step 3:
-Start backend server:
+Start the backend server:
 
 ```
 npm start
@@ -56,7 +56,7 @@ cd client
 npm install
 ```
 ## Step 5:
-Start frontend server:
+Start the frontend server:
 
 ```
 npm start
@@ -65,6 +65,17 @@ npm start
 ## Start Chatting!!!!
 
 * Open a new terminal and start another instance of the client at a different port (Eg: port 3001). Login with a separate name and join the existing room to chat in real time *
+
+
+## How To Use Chat App using Live Link:
+
+### Step 1
+Start the backend server using above instructions.
+
+### Step 2
+Open this live link: [Live Demo](https://cartloop-chatapp.netlify.app/)
+
+Open the Live Demo in separate tabs and login with a new name and join the existing room to start chatting.
 
 # Author
 
