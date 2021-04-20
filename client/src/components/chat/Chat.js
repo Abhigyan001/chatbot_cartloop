@@ -9,7 +9,7 @@ import Input from '../Input/Input';
 
 import './Chat.css';
 
-const ENDPOINT = 'https://cartloop-chatbox.herokuapp.com/';
+const ENDPOINT = 'http://localhost:5000/';
 
 let socket;
 
