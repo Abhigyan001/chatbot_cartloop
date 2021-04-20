@@ -1,53 +1,68 @@
-import React, { useState, useEffect, useRef } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import queryString from 'query-string';
+import io from "socket.io-client";
 
-//  Import action
-import { userMessage, sendMessage } from "../../actions/watson";
+import TextContainer from '../TextContainer/TextContainer';
+import Messages from '../Messages/Messages';
+import InfoBar from '../InfoBar/InfoBar';
+import Input from '../Input/Input';
 
-const Chat = ({ chat, userMessage, sendMessage }) => {
-  // Handle Users Message
-  const [message, setMessage] = useState("");
-  const endOfMessages = useRef(null);
+import './Chat.css';
 
-  const scrollToBottom = () => {
-    endOfMessages.current.scrollIntoView({ behavior: "smooth" });
-  };
-  useEffect(scrollToBottom, [chat]);
+const ENDPOINT = 'https://project-chat-application.herokuapp.com/';
 
-  //  Function that handles user submission
-  const handleClick = async (e) => {
-    const code = e.keyCode || e.which;
+let socket;
 
-    if (code === 13) {
-      console.log(message);
-      userMessage(message);
-      sendMessage(message);
-      setMessage("");
+const Chat = ({ location }) => {
+  const [name, setName] = useState('');
+  const [room, setRoom] = useState('');
+  const [users, setUsers] = useState('');
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const { name, room } = queryString.parse(location.search);
+
+    socket = io(ENDPOINT);
+
+    setRoom(room);
+    setName(name)
+
+    socket.emit('join', { name, room }, (error) => {
+      if(error) {
+        alert(error);
+      }
+    });
+  }, [ENDPOINT, location.search]);
+  
+  useEffect(() => {
+    socket.on('message', message => {
+      setMessages(messages => [ ...messages, message ]);
+    });
+    
+    socket.on("roomData", ({ users }) => {
+      setUsers(users);
+    });
+}, []);
+
+  const sendMessage = (event) => {
+    event.preventDefault();
+
+    if(message) {
+      socket.emit('sendMessage', message, () => setMessage(''));
     }
-  };
+  }
 
   return (
-    <div className="chat">
-      <h1>Chatty the Chatbot</h1>
-      {/* Handle Messages */}
-      <div class="historyContainer">
-        {chat.length === 0
-          ? ""
-          : chat.map((msg) => <div className={msg.type}>{msg.message}</div>)}
-        <div ref={endOfMessages}></div>
+    <div className="outerContainer">
+      <div className="container">
+          <InfoBar room={room} />
+          <Messages messages={messages} name={name} />
+          <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
       </div>
-      {/* Input Box */}
-      <input
-        id="chatBox"
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={handleClick}
-        value={message}
-      ></input>
+      <TextContainer users={users}/>
     </div>
   );
-};
-const mapStateToProps = (state) => ({
-  chat: state.watson.messages,
-});
+}
 
-export default connect(mapStateToProps, { userMessage, sendMessage })(Chat);
+export default Chat;
